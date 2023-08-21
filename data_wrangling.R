@@ -66,7 +66,67 @@ crab_size_site
 
 #-Selecting-#
 
+# individual column by name
+crab_subset <- pie_crab %>%
+  select(size, site, latitude)
+names(crab_subset)
+
+#ranges
+crab_subset_range <- pie_crab %>%
+  select(site:air_temp)
+names(crab_subset_range)
+
+crab_sub_2 <- pie_crab %>%
+  select(date:size, water_temp, name)
+names(crab_sub_2)
+
+#reorder
+reorderd_crabs <- pie_crab %>%
+  select(name, water_temp, size, date)
+reorderd_crabs
+
+#-Mutate-#
+
+crab_resize <- pie_crab %>%
+  mutate(size_cm = size / 10) %>%
+  rename(size_mm = size)
+crab_resize
 
 
+pie_crab %>%
+  mutate(mean_size = mean(size)) # adds the mean and populates the column with the value output
 
+crabs_teddy <- pie_crab %>%
+  mutate(name = "Teddy") # overwrites the name column and values with our new string
+crabs_teddy
+
+# group_by plus summarise
+
+group_mean <- pie_crab %>%
+  group_by(name) %>%
+  summarise(mean_size = mean(size),
+            sd_size = sd(size))
+group_mean
+
+
+# group_by then mutate
+
+group_mutate <- pie_crab %>%
+  group_by(site) %>%
+  mutate(mean_size = mean(size))
+unique(group_mutate$mean_size)
+
+
+# new column based on data
+
+case_crab <- pie_crab %>%
+  mutate(bin = case_when(size > 20 ~ "Giant",
+                         size <= 20 ~ "Small"))
+case_crab
+
+binned_sites <- pie_crab %>%
+  mutate(region = case_when(site %in% c("ZI", "CC", "PIE") ~ "Low",
+                            site %in% c("ZZ", "NIB") ~ "Medium",
+                            TRUE ~ "High")) #TRUE means anything else (the else of case_when())
+binned_sites
 
